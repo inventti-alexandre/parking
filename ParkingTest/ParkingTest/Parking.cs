@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,6 +19,7 @@ namespace ParkingTest
 
         private List<Car> Cars;
         private List<Transaction> Transactions;
+
         private double ParkingBalance;
 
         private static Parking instance;
@@ -25,10 +29,14 @@ namespace ParkingTest
 
             Cars = new List<Car>(ParkingSpace);
             Transactions = new List<Transaction>();
+
             ParkingBalance = 0;
 
-            TimerCallback tm = new TimerCallback(calculateFundsForAllCars);
-            Timer timer = new Timer(tm, null, 0, Timeout);
+            TimerCallback calculateFunds = new TimerCallback(calculateFundsForAllCars);
+            Timer timer1 = new Timer(calculateFunds, null, 0, Timeout);
+
+            TimerCallback serializeToFile = new TimerCallback(SerializeToFile);
+            Timer timer2 = new Timer(serializeToFile, null, 0, 60000);
 
 
         }
@@ -118,6 +126,57 @@ namespace ParkingTest
                     });
                 }
             }
+        }
+
+
+        private void SerializeToFile(object obj)
+        {
+
+            List<SerializeTransactions> previousTransactions = this.DeserializeFromFile();
+
+            SerializeTransactions transactionsForPreviousMinute = new SerializeTransactions()
+            {
+                timeOfSerialization = DateTime.Now,
+                fundsForPreviousMinute = Transactions.Select(x => x.funds).Sum()
+            };
+
+
+            previousTransactions.Add(transactionsForPreviousMinute);
+    
+
+            BinaryFormatter formatter = new BinaryFormatter();
+            using (FileStream fs = new FileStream("Transactions.log", FileMode.OpenOrCreate))
+            {
+                formatter.Serialize(fs, previousTransactions);
+
+                Console.WriteLine("All transactions were serialized to Transaction.log file");
+            }
+
+
+            Transactions = new List<Transaction>();
+        }
+
+
+
+        public List<SerializeTransactions> DeserializeFromFile()
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            List<SerializeTransactions> transactionLog;
+
+            try
+            {
+                using (FileStream fs = new FileStream("Transactions.log", FileMode.OpenOrCreate))
+                {
+                    transactionLog = (List<SerializeTransactions>)formatter.Deserialize(fs);
+
+                }
+            }
+            catch (SerializationException)
+            {
+                transactionLog = new List<SerializeTransactions>();
+            }
+
+            return transactionLog;
         }
 
     }

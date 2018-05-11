@@ -27,10 +27,11 @@ namespace ParkingTest
                 Console.WriteLine("3 - Get transaction history");
                 Console.WriteLine("4 - Get total parking revenue");
                 Console.WriteLine("5 - Get available parking places");
-                Console.WriteLine("6 - Exit");
+                Console.WriteLine("6 - Show Transaction.log");
+                Console.WriteLine("7 - Exit");
 
                 int actionId = Convert.ToInt32(Console.ReadLine());
-                if(actionId < 1 && actionId > 6)
+                if(actionId < 1 && actionId > 7)
                 {
                     throw new Exception();
                 }
@@ -39,7 +40,7 @@ namespace ParkingTest
             catch(Exception)
             {
                 Console.WriteLine("The data is incorrect!");
-                return 6;
+                return 7;
             }
         }
 
@@ -79,7 +80,6 @@ namespace ParkingTest
             catch (Exception)
             {
                 Console.WriteLine("Please, enter the valid data abount car");
-                //addCarToParking(parking);
             }
 
         }
@@ -87,6 +87,10 @@ namespace ParkingTest
         public void removeCarFromParking()
         {
             Console.WriteLine("Enter the Id of the car you want to remove from parking:");
+            foreach(var car in parking.getAllCars())
+            {
+                Console.WriteLine(car.Id);
+            }
             try
             {
                 int id = Convert.ToInt32(Console.ReadLine());
@@ -116,7 +120,6 @@ namespace ParkingTest
                 double newBalance = Convert.ToDouble(Console.ReadLine());
                 if(newBalance >= Math.Abs(carToRemove.Balance))
                 {
-                    // повторить транзакцию
                     int id = carToRemove.Id;
                     parking.calculateFee(newBalance, carToRemove);
                     parking.removeCar(carToRemove);
@@ -130,7 +133,6 @@ namespace ParkingTest
             }
             catch (Exception)
             {
-                // To Do: подумать. Может возвращать главное меню.
                 addFundsMessage(carToRemove);
             }
         }
@@ -158,7 +160,6 @@ namespace ParkingTest
             catch (Exception)
             {
                 Console.WriteLine("Incorrect data");
-                // To Do: подумать. Может возвращать главное меню.
             }
         }
 
@@ -172,7 +173,7 @@ namespace ParkingTest
             Console.WriteLine("The number of available places is " + parking.availablePlaces());
         }
 
-        public void showAllTransactions()
+        public void showAllTransactionsForCurrentMinute()
         {
             Console.WriteLine("Transactions:");
             Console.WriteLine("{0} - {1} - {2}", "Date", "Car Id", "Funds");
@@ -181,6 +182,16 @@ namespace ParkingTest
                 Console.WriteLine("{0} - {1} - {2}", transaction.transactionDate, transaction.carId, transaction.funds);
             }
 
+        }
+
+        public void showTransactionLog()
+        {
+            List<SerializeTransactions> transactionlog = parking.DeserializeFromFile();
+            Console.WriteLine("Transaction history: ");
+            foreach (var record in transactionlog)
+            {
+                Console.WriteLine("Date: {0} --- Total funds: {1}", record.timeOfSerialization, record.fundsForPreviousMinute);
+            }
         }
     }
 }

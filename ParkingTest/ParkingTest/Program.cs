@@ -11,7 +11,6 @@ namespace ParkingTest
     {
         static void Main(string[] args)
         {
-            Settings.ParkingSpace = 10;
             Parking parking = Parking.getInstance();
             Menu menu = new Menu(parking);
 
@@ -31,7 +30,7 @@ namespace ParkingTest
                         }
                     case 3:
                         {
-                            menu.showAllTransactions();
+                            menu.showAllTransactionsForCurrentMinute();
                             break;
                         }
                     case 4:
@@ -45,6 +44,11 @@ namespace ParkingTest
                             break;
                         }
                     case 6:
+                        {
+                            menu.showTransactionLog();
+                            break;
+                        }
+                    case 7:
                         {
                             return;
                         }
