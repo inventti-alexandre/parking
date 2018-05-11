@@ -1,0 +1,6 @@
+D:\Tetiana Markova\homepage\ParkingTest\ParkingTest\bin\Debug\ParkingTest.exe.config
+D:\Tetiana Markova\homepage\ParkingTest\ParkingTest\bin\Debug\ParkingTest.exe
+D:\Tetiana Markova\homepage\ParkingTest\ParkingTest\bin\Debug\ParkingTest.pdb
+D:\Tetiana Markova\homepage\ParkingTest\ParkingTest\obj\Debug\ParkingTest.csprojResolveAssemblyReference.cache
+D:\Tetiana Markova\homepage\ParkingTest\ParkingTest\obj\Debug\ParkingTest.exe
+D:\Tetiana Markova\homepage\ParkingTest\ParkingTest\obj\Debug\ParkingTest.pdb
